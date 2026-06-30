@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test webOS - Quetbol</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0a0a0a;
+      color: #eee;
+      padding: 28px;
+      font-size: 22px;
+      line-height: 1.45;
+    }
+    h1 { font-size: 30px; margin-bottom: 8px; color: #ffd400; }
+    .sub { color: #aaa; font-size: 18px; margin-bottom: 24px; }
+    .box {
+      background: #141414;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    .box h2 { font-size: 20px; margin-bottom: 10px; color: #fff; }
+    .ok { color: #4ade80; }
+    .bad { color: #f87171; font-weight: bold; }
+    .warn { color: #fbbf24; }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 18px;
+      background: #000;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 14px;
+      margin-top: 10px;
+      color: #f87171;
+    }
+    button {
+      margin-top: 12px;
+      margin-right: 10px;
+      padding: 14px 22px;
+      font-size: 20px;
+      border: none;
+      border-radius: 10px;
+      background: #ffd400;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 20px; }
+    td { padding: 8px 4px; border-bottom: 1px solid #222; vertical-align: top; }
+    td:first-child { width: 42%; color: #bbb; }
+  </style>
+</head>
+<body>
+  <h1>Test compatibilidad LG webOS</h1>
+  <p class="sub">No modifica index.html — solo diagnostica APIs y errores.</p>
+
+  <div class="box">
+    <h2>Navegador</h2>
+    <p id="ua"></p>
+  </div>
+
+  <div class="box">
+    <h2>APIs JavaScript</h2>
+    <table id="api-table"></table>
+  </div>
+
+  <div class="box">
+    <h2>Errores capturados</h2>
+    <p id="err-count" class="warn">Ninguno todavia</p>
+    <pre id="err-log">(esperando...)</pre>
+  </div>
+
+  <div class="box">
+    <h2>Prueba START API (form POST)</h2>
+    <p id="api-status" class="warn">Pulsa el boton para probar verify/activate</p>
+    <button type="button" id="btn-test-api">Probar API (GET health)</button>
+    <button type="button" id="btn-test-crypto">Probar firma HMAC</button>
+    <pre id="api-log"></pre>
+  </div>
+
+  <script>
+    (function () {
+      var errLog = document.getElementById("err-log");
+      var errCount = document.getElementById("err-count");
+      var errors = [];
+
+      function logError(label, detail) {
+        var line = "[" + new Date().toLocaleTimeString() + "] " + label;
+        if (detail) line += "\n" + detail;
+        errors.push(line);
+        errCount.textContent = errors.length + " error(es)";
+        errCount.className = "bad";
+        errLog.textContent = errors.join("\n\n");
+        try { alert(label + (detail ? "\n\n" + detail : "")); } catch (e) {}
+      }
+
+      window.onerror = function (msg, url, line, col, err) {
+        logError("onerror: " + msg, "Linea " + line + " col " + col + "\n" + (url || ""));
+        return false;
+      };
+
+      window.onunhandledrejection = function (e) {
+        var reason = e && e.reason;
+        logError("Promise rechazada", reason && (reason.message || String(reason)));
+      };
+
+      document.getElementById("ua").textContent = navigator.userAgent || "(sin userAgent)";
+
+      function row(name, ok, value) {
+        return "<tr><td>" + name + "</td><td class='" + (ok ? "ok" : "bad") + "'>" +
+          (ok ? "OK" : "NO") + " — " + value + "</td></tr>";
+      }
+
+      function safeTest(name, fn) {
+        try {
+          return fn();
+        } catch (e) {
+          return { ok: false, value: e.message || String(e) };
+        }
+      }
+
+      var tests = [];
+      tests.push(row("typeof fetch", typeof fetch === "function", typeof fetch));
+      tests.push(row("typeof Promise", typeof Promise !== "undefined", typeof Promise));
+      tests.push(row("typeof crypto", typeof crypto !== "undefined", typeof crypto));
+
+      var subtle = safeTest("crypto.subtle", function () {
+        return { ok: !!(window.crypto && window.crypto.subtle), value: String(!!(window.crypto && window.crypto.subtle)) };
+      });
+      tests.push(row("crypto.subtle", subtle.ok, subtle.value));
+
+      var uuid = safeTest("crypto.randomUUID", function () {
+        var fn = window.crypto && window.crypto.randomUUID;
+        return { ok: typeof fn === "function", value: typeof fn };
+      });
+      tests.push(row("crypto.randomUUID", uuid.ok, uuid.value));
+
+      tests.push(row("URLSearchParams", typeof URLSearchParams !== "undefined", typeof URLSearchParams));
+      tests.push(row("TextEncoder", typeof TextEncoder !== "undefined", typeof TextEncoder));
+      tests.push(row("localStorage", typeof localStorage !== "undefined", typeof localStorage));
+      tests.push(row("async function", true, "syntax OK (si ves esto, el parser lo acepto)"));
+
+      var closestOk = safeTest("element.closest", function () {
+        var d = document.createElement("div");
+        d.innerHTML = "<span></span>";
+        return { ok: typeof d.closest === "function", value: typeof d.closest };
+      });
+      tests.push(row("Element.closest", closestOk.ok, closestOk.value));
+
+      var customEv = safeTest("CustomEvent", function () {
+        var ev = new CustomEvent("test");
+        return { ok: !!ev, value: "constructor OK" };
+      });
+      tests.push(row("CustomEvent", customEv.ok, customEv.value));
+
+      document.getElementById("api-table").innerHTML = tests.join("");
+
+      var API_URL =
+        "https://script.google.com/macros/s/AKfycbwynLPi-3yMVumS9XwcAQi4dAwiRjydEJ7f9VKGcfBYd15GfksRFliCj6_7oOHFpOiV/exec";
+      var HMAC_SECRET = "aQBlsKvZwuVUfd9AUt8WEA4we38bvm2qXKsKhILALtNZVnqc";
+
+      function setApiLog(text, isErr) {
+        var el = document.getElementById("api-log");
+        el.textContent = text;
+        el.style.color = isErr ? "#f87171" : "#4ade80";
+      }
+
+      function detectPlatform() {
+        var ua = String(navigator.userAgent || "").toLowerCase();
+        if (/web0s|webos|lge browser/i.test(ua)) return "webos";
+        if (/tizen/i.test(ua)) return "tizen";
+        return "web";
+      }
+
+      function getDeviceId() {
+        var key = "lg_test_device_id";
+        var id = localStorage.getItem(key);
+        if (!id) {
+          id = "lg-" + Date.now() + "-" + Math.floor(Math.random() * 99999);
+          localStorage.setItem(key, id);
+        }
+        return id;
+      }
+
+      function randomNonce() {
+        if (window.crypto && typeof window.crypto.randomUUID === "function") {
+          return window.crypto.randomUUID().replace(/-/g, "");
+        }
+        return String(Date.now()) + Math.random().toString(36).slice(2);
+      }
+
+      function normalizeCode(code) {
+        return String(code || "").trim().toUpperCase().replace(/\s+/g, "");
+      }
+
+      function buildSignPayload(action, timestamp, nonce, code, deviceId, token) {
+        return [action, timestamp, nonce, normalizeCode(code), deviceId, token || ""].join("|");
+      }
+
+      function hmacSignBase64(payload, secret) {
+        if (!window.crypto || !window.crypto.subtle) {
+          return Promise.reject(new Error("crypto.subtle no disponible en este navegador"));
+        }
+        var enc = new TextEncoder();
+        return window.crypto.subtle.importKey(
+          "raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
+        ).then(function (key) {
+          return window.crypto.subtle.sign("HMAC", key, enc.encode(payload));
+        }).then(function (sig) {
+          var bytes = new Uint8Array(sig);
+          var binary = "";
+          for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+          return btoa(binary);
+        });
+      }
+
+      document.getElementById("btn-test-api").onclick = function () {
+        var status = document.getElementById("api-status");
+        status.textContent = "Probando GET...";
+        status.className = "warn";
+
+        if (typeof fetch !== "function") {
+          setApiLog("fetch no existe", true);
+          status.textContent = "fetch NO disponible";
+          status.className = "bad";
+          return;
+        }
+
+        fetch(API_URL, { method: "GET" })
+          .then(function (res) { return res.text(); })
+          .then(function (text) {
+            status.textContent = "GET OK";
+            status.className = "ok";
+            setApiLog(text.slice(0, 800), false);
+          })
+          .catch(function (err) {
+            status.textContent = "GET fallo";
+            status.className = "bad";
+            setApiLog(err.message || String(err), true);
+          });
+      };
+
+      document.getElementById("btn-test-crypto").onclick = function () {
+        var status = document.getElementById("api-status");
+        status.textContent = "Probando HMAC + form POST verify...";
+        status.className = "warn";
+
+        var deviceId = getDeviceId();
+        var timestamp = Date.now();
+        var nonce = randomNonce();
+        var token = localStorage.getItem("start_session_token") || "";
+        var payload = buildSignPayload("verify", timestamp, nonce, "", deviceId, token);
+
+        hmacSignBase64(payload, HMAC_SECRET)
+          .then(function (signature) {
+            if (typeof URLSearchParams === "undefined") {
+              throw new Error("URLSearchParams no disponible");
+            }
+            var form = new URLSearchParams();
+            form.append("action", "verify");
+            form.append("code", "");
+            form.append("deviceId", deviceId);
+            form.append("token", token);
+            form.append("timestamp", String(timestamp));
+            form.append("nonce", nonce);
+            form.append("signature", signature);
+            form.append("platform", detectPlatform());
+            form.append("userAgent", navigator.userAgent || "");
+
+            var admin = "";
+            try {
+              admin = sessionStorage.getItem("start_admin_bypass") || "";
+              if (!admin && location.search.indexOf("admin=") !== -1) {
+                var m = location.search.match(/[?&]admin=([^&]+)/);
+                if (m) admin = decodeURIComponent(m[1]);
+              }
+            } catch (e) {}
+            if (admin) form.append("adminBypass", admin);
+
+            return fetch(API_URL, { method: "POST", body: form });
+          })
+          .then(function (res) { return res.text(); })
+          .then(function (text) {
+            status.textContent = "HMAC + POST OK (ver respuesta)";
+            status.className = "ok";
+            setApiLog(text.slice(0, 1200), false);
+          })
+          .catch(function (err) {
+            status.textContent = "HMAC/POST fallo";
+            status.className = "bad";
+            setApiLog(err.message || String(err), true);
+          });
+      };
+
+      /* Prueba automatica al cargar: rompe si algo basico falla */
+      try {
+        if (typeof Promise === "undefined") throw new Error("Promise no disponible");
+        if (typeof fetch === "undefined") throw new Error("fetch no disponible");
+        document.getElementById("api-status").textContent =
+          "Listo. Usa los botones o revisa la tabla de APIs arriba.";
+      } catch (bootErr) {
+        logError("Error al iniciar test", bootErr.message || String(bootErr));
+      }
+    })();
+  </script>
+</body>
+</html>

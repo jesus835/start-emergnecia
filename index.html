@@ -1,0 +1,2473 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pluto TV - Panel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+/* ===========================
+   PLUTO SANS (app Android)
+=========================== */
+
+
+
+/* ===========================
+   RESET
+=========================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+body{
+    font-family:"Pluto Sans", "Inter", system-ui, sans-serif;
+    font-weight:500;
+    background:#0d0d0d;
+    color:#fff;
+}
+
+/* ===========================
+   APP
+=========================== */
+
+.app{
+    display:flex;
+    width:100%;
+    height:100vh;
+    overflow:hidden;
+}
+
+/* ===========================
+   SIDEBAR
+=========================== */
+
+.sidebar{
+    width:280px;
+    flex-shrink:0;
+    height:100vh;
+    background:#000;
+    display:flex;
+    flex-direction:column;
+    border-right:1px solid #232323;
+    overflow:hidden;
+}
+
+.logo{
+    height:80px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-bottom:1px solid #1b1b1b;
+}
+
+.logo img{
+    width:176px;
+    max-height:77px;
+    object-fit:contain;
+}
+
+.logo-fallback{
+    font-size:30px;
+    font-weight:900;
+    letter-spacing:-1px;
+}
+
+nav li .menu-label{
+    flex:1;
+    min-width:0;
+}
+
+nav{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+
+.menu-title{
+    color:#888;
+    font-size:12px;
+    letter-spacing:2px;
+    padding:24px;
+}
+
+nav ul{
+    list-style:none;
+}
+
+nav li{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    height:54px;
+    padding-left:24px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+nav li:hover{
+    background:#181818;
+}
+
+nav li.active{
+    background:#ffd100;
+    color:#000;
+    font-weight:700;
+}
+
+nav li i{
+    width:25px;
+    text-align:center;
+    font-size:20px;
+}
+
+.sidebar::-webkit-scrollbar,
+nav::-webkit-scrollbar{
+    width:8px;
+}
+
+.sidebar::-webkit-scrollbar-thumb,
+nav::-webkit-scrollbar-thumb{
+    background:#444;
+    border-radius:30px;
+}
+
+.sidebar-footer{
+    flex-shrink:0;
+    padding:14px 16px 18px;
+    border-top:1px solid #232323;
+    background:linear-gradient(180deg, #000 0%, #080808 100%);
+}
+
+.session-card{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:12px;
+    padding:12px 12px 11px;
+    border-radius:14px;
+    background:linear-gradient(145deg, #141414 0%, #101010 100%);
+    border:1px solid #2a2a2a;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.session-card__avatar{
+    flex-shrink:0;
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    display:grid;
+    place-items:center;
+    font-size:16px;
+    font-weight:800;
+    color:#000;
+    background:linear-gradient(135deg, #ffd400 0%, #ffb800 100%);
+    box-shadow:0 4px 14px rgba(255,212,0,.22);
+}
+
+.session-card__body{
+    min-width:0;
+    flex:1;
+}
+
+.session-card__label{
+    margin:0 0 2px;
+    font-size:10px;
+    letter-spacing:1.4px;
+    text-transform:uppercase;
+    color:#777;
+    font-weight:600;
+}
+
+.session-card__name{
+    margin:0;
+    font-size:15px;
+    font-weight:700;
+    color:#fff;
+    line-height:1.25;
+    word-break:break-word;
+}
+
+.session-card__user{
+    margin:4px 0 0;
+    font-size:12px;
+    color:#a8a8a8;
+    line-height:1.3;
+    word-break:break-word;
+}
+
+.session-card__expiry{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px solid #262626;
+}
+
+.session-card__expiry > i{
+    flex-shrink:0;
+    font-size:14px;
+    color:#ffd400;
+}
+
+.session-card__expiry-text{
+    min-width:0;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+}
+
+.session-card__expiry-label{
+    font-size:10px;
+    color:#888;
+    letter-spacing:.2px;
+}
+
+.session-card__expiry-date{
+    font-size:12px;
+    font-weight:600;
+    color:#e8e8e8;
+}
+
+.session-card__expiry-pill{
+    flex-shrink:0;
+    padding:4px 8px;
+    border-radius:999px;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.2px;
+    background:rgba(74,222,128,.12);
+    color:#4ade80;
+    border:1px solid rgba(74,222,128,.28);
+}
+
+.session-card__expiry-pill.is-warn{
+    background:rgba(251,191,36,.12);
+    color:#fbbf24;
+    border-color:rgba(251,191,36,.3);
+}
+
+.session-card__expiry-pill.is-bad{
+    background:rgba(248,113,113,.12);
+    color:#f87171;
+    border-color:rgba(248,113,113,.3);
+}
+
+.btn-logout{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    border:1px solid #333;
+    border-radius:10px;
+    padding:12px 14px;
+    background:#141414;
+    color:#f0f0f0;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background .2s, border-color .2s, color .2s;
+}
+
+.btn-logout:hover{
+    background:#1f1f1f;
+    border-color:#ffd100;
+    color:#ffd100;
+}
+
+.btn-logout.tv-focused{
+    background:#1f1f1f;
+    border-color:#ffd100;
+    color:#ffd100;
+}
+
+/* ===========================
+   CONTENT
+=========================== */
+
+.content{
+    flex:1;
+    min-width:0;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    background:#111;
+}
+
+/* =====================================
+   BANNER
+===================================== */
+
+.banner{
+    flex-shrink:0;
+    margin:30px;
+    height:260px;
+    min-height:260px;
+    background:#ffd400;
+    border-radius:26px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    overflow:hidden;
+    padding:45px;
+}
+
+.banner-left{
+    width:55%;
+}
+
+.banner-left h1{
+    font-size:42px;
+    font-weight:800;
+    color:#111;
+    margin-bottom:18px;
+    line-height:1.1;
+}
+
+.banner-left p{
+    color:#222;
+    font-size:18px;
+    line-height:30px;
+    margin-bottom:28px;
+}
+
+.banner-left button{
+    width:180px;
+    height:54px;
+    border:none;
+    border-radius:30px;
+    background:#111;
+    color:white;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.banner-left button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 30px rgba(0,0,0,.35);
+}
+
+.banner-right{
+    width:40%;
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+}
+
+.banner-right img{
+    max-width:100%;
+    max-height:220px;
+}
+
+/* =====================================
+   CATEGORÍAS (barra horizontal)
+===================================== */
+
+.category-bar{
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:0 30px 22px;
+    padding:4px 2px 8px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scroll-behavior:smooth;
+    scrollbar-width:thin;
+    scrollbar-color:#444 transparent;
+}
+
+.category-bar::-webkit-scrollbar{
+    height:6px;
+}
+
+.category-bar::-webkit-scrollbar-thumb{
+    background:#444;
+    border-radius:999px;
+}
+
+.category-bar__placeholder{
+    margin:0;
+    padding:12px 16px;
+    color:#888;
+    font-size:14px;
+    white-space:nowrap;
+}
+
+.category-chip{
+    flex-shrink:0;
+    border:1px solid #2e2e2e;
+    background:#141414;
+    color:#d8d8d8;
+    border-radius:999px;
+    padding:11px 20px;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    transition:background .2s, border-color .2s, color .2s, transform .2s;
+    white-space:nowrap;
+}
+
+.category-chip:hover{
+    background:#1c1c1c;
+    border-color:#444;
+}
+
+.category-chip.active{
+    background:#ffd400;
+    border-color:#ffd400;
+    color:#000;
+}
+
+/* =====================================
+   GRID
+===================================== */
+
+.channels-scroll{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    overflow-x:hidden;
+    scroll-padding:18px 0 14px;
+}
+
+.channels{
+    padding:18px 30px 30px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(281px,1fr));
+    gap:19px;
+}
+
+.grid-empty{
+    grid-column:1 / -1;
+    color:#888;
+    font-size:16px;
+    padding:40px 0;
+    text-align:center;
+}
+
+/* =====================================
+   CARD
+===================================== */
+
+.card{
+    background:#1b1b1b;
+    border-radius:19px;
+    overflow:hidden;
+    transition:.25s;
+    cursor:pointer;
+    border:1px solid #262626;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    border-color:#ffd400;
+    box-shadow:0 16px 40px rgba(0,0,0,.45);
+}
+
+.logo-channel{
+    height:145px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#111;
+}
+
+.logo-channel img{
+    max-width:70%;
+    max-height:77px;
+}
+
+.logo-channel img.logo-channel-img--lg{
+    max-width:87.5%;
+    max-height:96px;
+}
+
+.logo-channel .placeholder{
+    font-size:36px;
+    font-weight:800;
+    color:#ffd400;
+    letter-spacing:1px;
+}
+
+.logo-channel--light .placeholder{
+    color:#111;
+}
+
+.card-body{
+    padding:19px;
+}
+
+.card-body h3{
+    font-size:19px;
+    margin-bottom:9px;
+    font-weight:700;
+}
+
+.card-body p{
+    color:#aaaaaa;
+    font-size:13px;
+    line-height:20px;
+}
+
+/* =====================================
+   PROGRESS BAR
+===================================== */
+
+.progress{
+    margin-top:19px;
+    width:100%;
+    height:7px;
+    border-radius:50px;
+    background:#2d2d2d;
+    overflow:hidden;
+}
+
+.bar{
+    width:100%;
+    height:100%;
+    background:#ffd400;
+    border-radius:50px;
+}
+
+/* =====================================
+   ANIMATION
+===================================== */
+
+.card,
+button,
+.category-chip,
+nav li{
+    transition:all .25s ease;
+}
+
+button:active{
+    transform:scale(.97);
+}
+
+/* ===================================
+   SCROLL PERSONALIZADO
+=================================== */
+
+.channels-scroll::-webkit-scrollbar{
+    width:10px;
+}
+
+.channels-scroll::-webkit-scrollbar-track{
+    background:#111;
+}
+
+.channels-scroll::-webkit-scrollbar-thumb{
+    background:#3a3a3a;
+    border-radius:20px;
+}
+
+.channels-scroll::-webkit-scrollbar-thumb:hover{
+    background:#555;
+}
+
+/* ===================================
+   EFECTOS
+=================================== */
+
+.card:hover .logo-channel{
+    background:#181818;
+}
+
+.card:hover .bar{
+    width:100%;
+    transition:.5s;
+}
+
+.card:hover h3{
+    color:#ffd400;
+}
+
+.banner:hover{
+    transform:scale(1.01);
+    transition:.35s;
+}
+
+.category-chip,
+nav li,
+.card,
+button{
+    user-select:none;
+}
+
+button{
+    letter-spacing:.5px;
+}
+
+button:hover{
+    filter:brightness(1.1);
+}
+
+/* ===================================
+   RESPONSIVE
+=================================== */
+
+@media(max-width:1400px){
+    .banner{
+        height:220px;
+        min-height:220px;
+    }
+    .banner-left h1{
+        font-size:34px;
+    }
+    .channels{
+        grid-template-columns:repeat(3,1fr);
+    }
+}
+
+@media(max-width:1200px){
+    .sidebar{
+        width:220px;
+    }
+    .banner{
+        flex-direction:column;
+        height:auto;
+        text-align:center;
+        gap:20px;
+    }
+    .banner-left{
+        width:100%;
+    }
+    .banner-right{
+        width:100%;
+        justify-content:center;
+    }
+    .channels{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:900px){
+    .sidebar{
+        display:none;
+    }
+    .category-bar{
+        margin:0 20px 18px;
+    }
+    .channels{
+        grid-template-columns:1fr;
+    }
+    .banner{
+        margin:20px;
+        padding:30px;
+    }
+    .banner-left h1{
+        font-size:28px;
+    }
+}
+
+@media(max-width:600px){
+    .banner-left h1{
+        font-size:24px;
+    }
+    .banner-left p{
+        font-size:15px;
+        line-height:24px;
+    }
+    .card{
+        border-radius:15px;
+    }
+    .logo-channel{
+        height:119px;
+    }
+    .card-body{
+        padding:15px;
+    }
+}
+
+/* ===================================
+   DETALLES
+=================================== */
+
+::selection{
+    background:#ffd400;
+    color:#000;
+}
+
+img{
+    display:block;
+    max-width:100%;
+}
+
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+input,
+button{
+    font-family:inherit;
+}
+
+body{
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+}
+
+/* ===================================
+   MANDO / TECLADO (D-pad + OK)
+=================================== */
+
+[data-focus-item]:focus,
+[data-focus-item]:focus-visible{
+    outline:none;
+}
+
+nav li.tv-focused,
+.category-chip.tv-focused,
+.banner-left button.tv-focused,
+.btn-logout.tv-focused{
+    outline:none;
+    box-shadow:0 0 0 2px #ffd400;
+}
+
+nav li.tv-focused:not(.active){
+    background:#181818;
+}
+
+.category-chip.tv-focused:not(.active){
+    background:#1c1c1c;
+    color:#fff;
+}
+
+.card.tv-focused{
+    position:relative;
+    z-index:2;
+    outline:none;
+    transform:translateY(-5px);
+    box-shadow:
+        0 0 0 2px var(--card-linea,#ffd400),
+        0 12px 32px rgba(0,0,0,.45);
+}
+
+.card.card-playing{
+    animation:cardPulse .55s ease;
+}
+
+@keyframes cardPulse{
+    0%{ box-shadow:0 0 0 0 rgba(255,212,0,.55); }
+    100%{ box-shadow:0 0 0 18px transparent; }
+}
+
+/* =====================================
+   PLAYER OVERLAY
+===================================== */
+
+.player-overlay{
+    position:fixed;
+    inset:0;
+    z-index:200;
+    background:#000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+}
+
+.player-overlay[hidden]{
+    display:none;
+}
+
+.player-shell{
+    position:relative;
+    width:min(1100px,100%);
+    height:100%;
+}
+
+.player-stage{
+    position:relative;
+    width:100%;
+    height:100%;
+    background:#000;
+}
+
+.player-veil{
+    position:absolute;
+    inset:0;
+    z-index:3;
+    background:#000;
+    pointer-events:none;
+}
+
+.player-veil.is-hidden{
+    display:none;
+}
+
+#player-video{
+    display:block;
+    width:100%;
+    height:100%;
+    max-height:78vh;
+    background:#000;
+    border-radius:0;
+    object-fit:contain;
+    pointer-events:none;
+}
+
+#player-video::-webkit-media-controls,
+#player-video::-webkit-media-controls-enclosure,
+#player-video::-webkit-media-controls-panel,
+#player-video::-webkit-media-controls-play-button,
+#player-video::-webkit-media-controls-start-playback-button,
+#player-video::-webkit-media-controls-overlay-play-button,
+#player-video::-webkit-media-controls-overlay-enclosure,
+#player-video::-webkit-media-controls-timeline,
+#player-video::-webkit-media-controls-current-time-display,
+#player-video::-webkit-media-controls-time-remaining-display,
+#player-video::-webkit-media-controls-mute-button,
+#player-video::-webkit-media-controls-toggle-closed-captions-button,
+#player-video::-webkit-media-controls-volume-slider,
+#player-video::-webkit-media-controls-fullscreen-button{
+    display:none !important;
+    opacity:0 !important;
+    visibility:hidden !important;
+    -webkit-appearance:none;
+}
+
+.player-overlay:fullscreen,
+.player-overlay:-webkit-full-screen{
+    padding:0;
+    background:#000;
+}
+
+.player-overlay:fullscreen .player-shell,
+.player-overlay:-webkit-full-screen .player-shell{
+    width:100%;
+    height:100%;
+    padding:0;
+}
+
+.player-overlay:fullscreen .player-stage,
+.player-overlay:-webkit-full-screen .player-stage{
+    width:100%;
+    height:100%;
+}
+
+.player-overlay:fullscreen #player-video,
+.player-overlay:-webkit-full-screen #player-video{
+    width:100%;
+    max-height:100%;
+    height:100%;
+}
+
+#player-video:fullscreen,
+#player-video:-webkit-full-screen{
+    width:100%;
+    height:100%;
+    max-height:100%;
+    border-radius:0;
+    object-fit:contain;
+    background:#000;
+}
+
+.auth-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% 0%, rgba(255, 212, 0, 0.12), transparent),
+    #000;
+  font-family: "Pluto Sans", "Inter", system-ui, sans-serif;
+}
+
+.auth-gate[hidden] {
+  display: none !important;
+}
+
+.auth-loading {
+  text-align: center;
+  color: #9d9d9d;
+}
+
+.auth-loading__spinner {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 14px;
+  border: 3px solid rgba(255, 255, 255, 0.08);
+  border-top-color: #ffd400;
+  border-radius: 50%;
+  animation: auth-spin 0.75s linear infinite;
+}
+
+@keyframes auth-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.auth-login {
+  width: min(420px, 100%);
+}
+
+.auth-brand {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.auth-brand__logo {
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  color: #fff;
+}
+
+.auth-brand__tagline {
+  margin: 8px 0 0;
+  color: #9d9d9d;
+  font-size: 14px;
+}
+
+.auth-card {
+  background: #101010;
+  border: 1px solid #232323;
+  border-radius: 16px;
+  padding: 28px 24px;
+}
+
+.auth-card h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.auth-card__lead {
+  margin: 0 0 20px;
+  color: #9d9d9d;
+  font-size: 13px;
+}
+
+.auth-card label {
+  display: block;
+  font-size: 12px;
+  color: #9d9d9d;
+  margin-bottom: 8px;
+}
+
+.auth-card input {
+  width: 100%;
+  border: 1px solid #333;
+  background: #0a0a0a;
+  color: #fff;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 17px;
+  letter-spacing: 1.2px;
+  font-family: inherit;
+  text-transform: uppercase;
+}
+
+.auth-card input:focus {
+  outline: none;
+  border-color: #ffd400;
+  box-shadow: 0 0 0 2px rgba(255, 212, 0, 0.2);
+}
+
+.auth-card button {
+  width: 100%;
+  margin-top: 16px;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  background: #ffd400;
+  color: #000;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.auth-card button:hover:not(:disabled) {
+  background: #ffe033;
+}
+
+.auth-card button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.auth-status {
+  min-height: 20px;
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: #9d9d9d;
+}
+
+.auth-status.error {
+  color: #ff6b6b;
+}
+
+.auth-status.loading {
+  color: #ffd400;
+}
+
+.auth-hint {
+  margin: 16px 0 0;
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+}
+
+.auth-session-badge {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #232323;
+  font-size: 12px;
+  color: #9d9d9d;
+  line-height: 1.5;
+}
+
+.auth-session-badge strong {
+  color: #e0e0e0;
+}
+
+.auth-admin-badge {
+  margin: 0 0 14px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(255, 212, 0, 0.12);
+  border: 1px solid rgba(255, 212, 0, 0.35);
+  color: #ffd400;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+  </style>
+</head>
+<body>
+<div id="auth-gate" class="auth-gate">
+    <div id="auth-loading" class="auth-loading">
+      <div class="auth-loading__spinner" aria-hidden="true"></div>
+      <p>Verificando acceso…</p>
+    </div>
+    <div id="auth-login" class="auth-login" hidden>
+      <div class="auth-brand">
+        <div class="auth-brand__logo">quetbol</div>
+        <p class="auth-brand__tagline">Activa tu acceso con código START</p>
+      </div>
+      <div class="auth-card">
+        <h2>Iniciar sesión</h2>
+        <p class="auth-card__lead">Ingresa tu código de licencia para ver los canales</p>
+        <label for="auth-code">Código START</label>
+        <input
+          id="auth-code"
+          type="text"
+          inputmode="text"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="START-XXXX-XXXX-XXXX"
+          maxlength="24"
+        />
+        <button id="auth-submit" type="button">Activar</button>
+        <p id="auth-status" class="auth-status" aria-live="polite"></p>
+        <p class="auth-hint">Un código = un dispositivo. Sin correo ni contraseña.</p>
+        <div id="auth-session-badge" class="auth-session-badge" hidden></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app" hidden>
+    <aside class="sidebar">
+      <div class="logo">
+        <img id="brand-logo" src="" alt="Quetbol" hidden />
+        <span id="brand-logo-fallback" class="logo-fallback">quetbol</span>
+      </div>
+
+      <nav>
+        <p class="menu-title">MENÚ</p>
+        <ul data-focus-zone="menu">
+          <li class="active" tabindex="0" data-focus-item>
+            <i class="fa-solid fa-tv"></i><span class="menu-label">TV en vivo</span>
+          </li>
+          <li tabindex="0" data-focus-item>
+            <i class="fa-solid fa-futbol"></i><span class="menu-label">Deportes</span>
+          </li>
+          <li tabindex="0" data-focus-item>
+            <i class="fa-solid fa-trophy"></i><span class="menu-label">Liga</span>
+          </li>
+          <li tabindex="0" data-focus-item>
+            <i class="fa-solid fa-flag-checkered"></i><span class="menu-label">Premier League</span>
+          </li>
+          <li tabindex="0" data-focus-item>
+            <i class="fa-solid fa-shirt"></i><span class="menu-label">Serie A</span>
+          </li>
+          <li tabindex="0" data-focus-item>
+            <i class="fa-solid fa-magnifying-glass"></i><span class="menu-label">Buscar</span>
+          </li>
+        </ul>
+
+      </nav>
+
+      <div class="sidebar-footer" data-focus-zone="session">
+        <div id="session-card" class="session-card">
+          <div class="session-card__avatar" id="session-avatar" aria-hidden="true">Q</div>
+          <div class="session-card__body">
+            <p class="session-card__label">Tu cuenta</p>
+            <p class="session-card__name" id="session-name">—</p>
+            <p class="session-card__user" id="session-user-meta" hidden></p>
+            <div class="session-card__expiry" id="session-expiry" hidden>
+              <i class="fa-regular fa-calendar-check" aria-hidden="true"></i>
+              <div class="session-card__expiry-text">
+                <span class="session-card__expiry-label">Válido hasta</span>
+                <span class="session-card__expiry-date" id="session-expiry-date"></span>
+              </div>
+              <span class="session-card__expiry-pill" id="session-expiry-pill"></span>
+            </div>
+          </div>
+        </div>
+        <button type="button" id="btn-logout" class="btn-logout" tabindex="0" data-focus-item>
+          <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+          <span>Cerrar sesión</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="banner" data-focus-zone="banner">
+        <div class="banner-left">
+          <h1>Mundial 2026 en vivo</h1>
+          <p>Disfruta todos los partidos, canales deportivos y noticias en un solo lugar. Sin costo, sin registro.</p>
+          <button type="button" tabindex="0" data-focus-item>Ver ahora</button>
+        </div>
+        <div class="banner-right" aria-hidden="true"></div>
+      </section>
+
+      <section
+        class="category-bar"
+        id="category-bar"
+        data-focus-zone="categories"
+        aria-label="Categorías"
+      >
+        <p class="category-bar__placeholder">Cargando categorías…</p>
+      </section>
+
+      <div class="channels-scroll">
+        <section class="channels" id="channels-grid" data-focus-zone="grid">
+          <p class="grid-empty">Cargando canales…</p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div id="player-overlay" class="player-overlay" hidden>
+    <div class="player-shell">
+      <div class="player-stage">
+        <video id="player-video" playsinline disablepictureinpicture controlslist="nodownload noplaybackrate noremoteplayback"></video>
+        <div id="player-veil" class="player-veil" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js"></script>
+  <script>
+window.START_CONFIG = {
+  API_URL:
+    'https://script.google.com/macros/s/AKfycbwynLPi-3yMVumS9XwcAQi4dAwiRjydEJ7f9VKGcfBYd15GfksRFliCj6_7oOHFpOiV/exec',
+  APP_HMAC_SECRET: 'aQBlsKvZwuVUfd9AUt8WEA4we38bvm2qXKsKhILALtNZVnqc',
+  PLATFORM: 'web'
+};
+  </script>
+  <script>
+(function (global) {
+  function normalizeCode(code) {
+    return String(code || '').trim().toUpperCase().replace(/\s+/g, '');
+  }
+
+  function isValidCodeFormat(code) {
+    return /^START-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(normalizeCode(code));
+  }
+
+  function getDeviceId() {
+    var key = 'start_device_id';
+    var id = localStorage.getItem(key);
+    if (!id) {
+      id =
+        (crypto.randomUUID && crypto.randomUUID()) ||
+        'web-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+      localStorage.setItem(key, id);
+    }
+    return id;
+  }
+
+  function buildPayload(action, timestamp, nonce, code, deviceId, token) {
+    return [
+      String(action || ''),
+      String(timestamp || ''),
+      String(nonce || ''),
+      normalizeCode(code || ''),
+      String(deviceId || '').trim(),
+      String(token || '').trim()
+    ].join('|');
+  }
+
+  async function hmacSignBase64(payload, secret) {
+    var enc = new TextEncoder();
+    var key = await crypto.subtle.importKey(
+      'raw',
+      enc.encode(secret),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['sign']
+    );
+    var sig = await crypto.subtle.sign('HMAC', key, enc.encode(payload));
+    var bytes = new Uint8Array(sig);
+    var binary = '';
+    bytes.forEach(function (b) {
+      binary += String.fromCharCode(b);
+    });
+    return btoa(binary);
+  }
+
+  function detectPlatform() {
+    var cfg = global.START_CONFIG || {};
+    if (cfg.PLATFORM && cfg.PLATFORM !== 'web') return cfg.PLATFORM;
+    var ua = String(
+      (typeof navigator !== 'undefined' && navigator.userAgent) || ''
+    ).toLowerCase();
+    if (/web0s|webos|lge browser/i.test(ua)) return 'webos';
+    if (/tizen|smart-tv|smarttv/i.test(ua)) return 'tizen';
+    if (/iphone|ipad|ipod/.test(ua)) return 'ios';
+    if (/android/.test(ua) && /mobile/.test(ua) && !/android tv|android-tv/.test(ua)) {
+      return 'android-mobile';
+    }
+    return cfg.PLATFORM || 'web';
+  }
+
+  async function buildSignedRequest(action, code, token) {
+    var cfg = global.START_CONFIG;
+    var deviceId = getDeviceId();
+    var timestamp = Date.now();
+    var nonce =
+      (crypto.randomUUID && crypto.randomUUID().replace(/-/g, '')) ||
+      String(timestamp) + Math.random().toString(36).slice(2);
+    var payload = buildPayload(action, timestamp, nonce, code || '', deviceId, token || '');
+    var signature = await hmacSignBase64(payload, cfg.APP_HMAC_SECRET);
+    return {
+      action: action,
+      code: normalizeCode(code || ''),
+      deviceId: deviceId,
+      token: token || '',
+      timestamp: timestamp,
+      nonce: nonce,
+      signature: signature,
+      platform: detectPlatform(),
+      userAgent: (typeof navigator !== 'undefined' && navigator.userAgent) || ''
+    };
+  }
+
+  function getAdminBypass() {
+    var cfg = global.START_CONFIG || {};
+    try {
+      var fromUrl = new URLSearchParams(global.location.search).get('admin');
+      if (fromUrl) sessionStorage.setItem('start_admin_bypass', fromUrl);
+    } catch (e) {}
+    return (
+      sessionStorage.getItem('start_admin_bypass') ||
+      cfg.ADMIN_BYPASS ||
+      ''
+    );
+  }
+
+  function toFormBody(body) {
+    var form = new URLSearchParams();
+    Object.keys(body).forEach(function (key) {
+      form.append(key, String(body[key]));
+    });
+    return form;
+  }
+
+  async function postSigned(action, code, token) {
+    var cfg = global.START_CONFIG;
+    var body = await buildSignedRequest(action, code, token);
+    var adminBypass = getAdminBypass();
+    if (adminBypass) body.adminBypass = adminBypass;
+    var res = await fetch(cfg.API_URL, {
+      method: 'POST',
+      body: toFormBody(body)
+    });
+    var json = await res.json();
+    if (!json.success) throw new Error(json.error || 'Error de activación');
+    return json.data;
+  }
+
+  global.StartCrypto = {
+    normalizeCode: normalizeCode,
+    isValidCodeFormat: isValidCodeFormat,
+    getDeviceId: getDeviceId,
+    buildSignedRequest: buildSignedRequest,
+    postSigned: postSigned,
+    getAdminBypass: getAdminBypass
+  };
+})(window);
+  </script>
+  <script>
+(function () {
+  var cfg = window.START_CONFIG;
+  var gate = document.getElementById('auth-gate');
+  var loadingEl = document.getElementById('auth-loading');
+  var loginEl = document.getElementById('auth-login');
+  var appEl = document.querySelector('.app');
+  var codeInput = document.getElementById('auth-code');
+  var submitBtn = document.getElementById('auth-submit');
+  var statusEl = document.getElementById('auth-status');
+  var sessionBadge = document.getElementById('auth-session-badge');
+
+  var readyResolve;
+  var readyReject;
+
+  window.startAuthReady = new Promise(function (resolve, reject) {
+    readyResolve = resolve;
+    readyReject = reject;
+  });
+
+  window.StartAuth = {
+    getSession: function () {
+      return window.__startSession || null;
+    },
+    logout: function () {
+      localStorage.removeItem('start_session_token');
+      window.__startSession = null;
+      location.reload();
+    }
+  };
+
+  function setStatus(text, type) {
+    if (!statusEl) return;
+    statusEl.textContent = text || '';
+    statusEl.className = 'auth-status' + (type ? ' ' + type : '');
+  }
+
+  function showLogin() {
+    if (loadingEl) loadingEl.hidden = true;
+    if (loginEl) loginEl.hidden = false;
+    if (codeInput) codeInput.focus();
+    showAdminBadge();
+  }
+
+  function showAdminBadge() {
+    var bypass = StartCrypto.getAdminBypass();
+    if (!bypass) return;
+    var card = document.querySelector('.auth-card');
+    if (!card || document.getElementById('auth-admin-badge')) return;
+    var badge = document.createElement('p');
+    badge.id = 'auth-admin-badge';
+    badge.className = 'auth-admin-badge';
+    badge.textContent = 'Modo admin — sin restricción de dispositivo';
+    card.insertBefore(badge, card.firstChild);
+  }
+
+  function formatCodeInput(value) {
+    var raw = value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (raw.indexOf('START') === 0) raw = raw.slice(5);
+    var parts = [];
+    for (var i = 0; i < raw.length && parts.length < 3; i += 4) {
+      parts.push(raw.slice(i, i + 4));
+    }
+    return parts.length ? 'START-' + parts.join('-') : '';
+  }
+
+  function saveSession(token) {
+    localStorage.setItem('start_session_token', token);
+  }
+
+  function loadSession() {
+    return localStorage.getItem('start_session_token') || '';
+  }
+
+  function wireLogoutButton() {
+    var btn = document.getElementById('btn-logout');
+    if (!btn || btn.dataset.wired) return;
+    btn.dataset.wired = '1';
+    btn.addEventListener('click', function () {
+      if (window.confirm('¿Cerrar sesión en este dispositivo?')) {
+        window.StartAuth.logout();
+      }
+    });
+  }
+
+  function sessionInitial(text) {
+    var clean = String(text || '').trim();
+    if (!clean) return 'Q';
+    return clean.charAt(0).toUpperCase();
+  }
+
+  function parseExpiry(value) {
+    if (!value) return null;
+    var d = new Date(value);
+    if (!isNaN(d.getTime())) return d;
+    var parts = String(value).split(/[/-]/);
+    if (parts.length === 3) {
+      var alt = new Date(parts[2], parts[1] - 1, parts[0]);
+      if (!isNaN(alt.getTime())) return alt;
+    }
+    return null;
+  }
+
+  function formatExpiryDate(value) {
+    var d = parseExpiry(value);
+    if (!d) return String(value || '');
+    return d.toLocaleDateString('es-ES', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  }
+
+  function expiryPill(value) {
+    var d = parseExpiry(value);
+    if (!d) return { text: 'Activa', className: '' };
+    var days = Math.ceil((d.getTime() - Date.now()) / 86400000);
+    if (days < 0) return { text: 'Vencida', className: 'is-bad' };
+    if (days === 0) return { text: 'Hoy', className: 'is-warn' };
+    if (days === 1) return { text: '1 día', className: 'is-warn' };
+    if (days <= 7) return { text: days + ' días', className: 'is-warn' };
+    if (days <= 30) return { text: days + ' días', className: '' };
+    return { text: 'OK', className: '' };
+  }
+
+  function isDisplayableUsuario(usuario, cliente) {
+    var u = String(usuario || '').trim();
+    var c = String(cliente || '').trim();
+    if (!u || u === c) return false;
+    if (/^\d+$/.test(u)) return false;
+    return true;
+  }
+
+  function updateSidebarSession(data) {
+    var card = document.getElementById('session-card');
+    if (!card) return;
+
+    var lic = (data && data.license) || {};
+    var cliente = lic.cliente || '';
+    var usuario = lic.usuario || '';
+    var displayName = cliente || usuario || data.device_label || 'Sesión activa';
+
+    var avatar = document.getElementById('session-avatar');
+    var nameEl = document.getElementById('session-name');
+    var userMeta = document.getElementById('session-user-meta');
+    var expiryWrap = document.getElementById('session-expiry');
+    var expiryDate = document.getElementById('session-expiry-date');
+    var expiryPillEl = document.getElementById('session-expiry-pill');
+
+    if (avatar) avatar.textContent = sessionInitial(displayName);
+    if (nameEl) nameEl.textContent = displayName;
+
+    if (userMeta) {
+      if (isDisplayableUsuario(usuario, cliente)) {
+        userMeta.textContent = usuario;
+        userMeta.hidden = false;
+      } else {
+        userMeta.textContent = '';
+        userMeta.hidden = true;
+      }
+    }
+
+    if (expiryWrap && expiryDate && expiryPillEl) {
+      if (lic.expira) {
+        expiryDate.textContent = formatExpiryDate(lic.expira);
+        var pill = expiryPill(lic.expira);
+        expiryPillEl.textContent = pill.text;
+        expiryPillEl.className = 'session-card__expiry-pill' + (pill.className ? ' ' + pill.className : '');
+        expiryWrap.hidden = false;
+      } else {
+        expiryWrap.hidden = true;
+      }
+    }
+
+    wireLogoutButton();
+  }
+
+  function unlockApp(data) {
+    window.__startSession = data;
+    if (gate) gate.hidden = true;
+    if (appEl) appEl.hidden = false;
+    document.body.classList.add('auth-unlocked');
+    updateSidebarSession(data);
+    readyResolve(data);
+  }
+
+  function updateSessionBadge(data) {
+    if (!sessionBadge) return;
+    var lic = (data && data.license) || {};
+    sessionBadge.innerHTML =
+      '<strong>' +
+      (lic.cliente || lic.usuario || data.device_label || 'Sesión activa') +
+      '</strong>' +
+      (lic.expira ? '<br>Expira: ' + lic.expira : '');
+  }
+
+  async function apiCall(action, code, token) {
+    return StartCrypto.postSigned(action, code, token);
+  }
+
+  async function tryAutoLogin() {
+    var token = loadSession();
+    if (!token) {
+      showLogin();
+      return;
+    }
+    try {
+      setStatus('Verificando sesión…', 'loading');
+      var data = await apiCall('verify', '', token);
+      updateSessionBadge(data);
+      unlockApp(data);
+    } catch (e) {
+      localStorage.removeItem('start_session_token');
+      showLogin();
+      setStatus('', '');
+    }
+  }
+
+  if (codeInput) {
+    codeInput.addEventListener('input', function () {
+      var pos = codeInput.selectionStart;
+      codeInput.value = formatCodeInput(codeInput.value);
+      codeInput.setSelectionRange(pos, pos);
+    });
+
+    codeInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') submitBtn.click();
+    });
+  }
+
+  if (submitBtn) {
+    submitBtn.addEventListener('click', async function () {
+      var code = StartCrypto.normalizeCode(codeInput.value);
+      if (!StartCrypto.isValidCodeFormat(code)) {
+        setStatus('Ingresa un código válido START-XXXX-XXXX-XXXX', 'error');
+        return;
+      }
+      submitBtn.disabled = true;
+      setStatus('Activando…', 'loading');
+      try {
+        var data = await apiCall('activate', code, '');
+        saveSession(data.token);
+        updateSessionBadge(data);
+        unlockApp(data);
+        setStatus('', '');
+      } catch (e) {
+        setStatus(e.message || 'No se pudo activar', 'error');
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  }
+
+  tryAutoLogin().catch(function (e) {
+    showLogin();
+    readyReject(e);
+  });
+})();
+  </script>
+  <script>
+const IMAGE_API =
+  "https://script.google.com/macros/s/AKfycbzwzJBjN28FFdxaSaSfYZ8sOM9kkqjEEGyI6KHOqCpm_mK6IoYFVAhJsEJn8A1ZT1OZhg/exec";
+
+const FIELD_SEGMENT =
+  /(?:^|\/)(name|m3u8|mp4|embed|referer|refer|origin|logo|banner|categoria|linea|fondo|boton|proxy):([\s\S]*?)(?=(?:\/name:|\/m3u8:|\/mp4:|\/embed:|\/referer:|\/refer:|\/origin:|\/logo:|\/banner:|\/categoria:|\/linea:|\/fondo:|\/boton:|\/proxy:)|$)/gi;
+
+const COLOR_ALIASES = {
+  blanco: "#ffffff",
+  negro: "#000000",
+  rojo: "#e53935",
+  roja: "#e53935",
+  azul: "#1e88e5",
+  verde: "#43a047",
+  amarillo: "#ffd400",
+  naranja: "#fb8c00",
+  gris: "#9e9e9e",
+  morado: "#8e24aa",
+  violeta: "#8e24aa",
+};
+
+const panelState = {
+  channels: [],
+  activeCategory: "Todos",
+  searchQuery: "",
+};
+
+function parseStreamedFields(payload) {
+  const fields = {};
+  FIELD_SEGMENT.lastIndex = 0;
+  let match;
+  while ((match = FIELD_SEGMENT.exec(payload)) !== null) {
+    fields[match[1].toLowerCase()] = match[2].trim();
+  }
+  return fields;
+}
+
+function resolveColor(value) {
+  if (!value) return null;
+  const raw = String(value).trim();
+  if (!raw) return null;
+  const key = raw.toLowerCase();
+  if (COLOR_ALIASES[key]) return COLOR_ALIASES[key];
+  if (/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(raw)) return raw;
+  if (/^(rgb|hsl)a?\(/i.test(raw)) return raw;
+  return raw;
+}
+
+function isLightColor(color) {
+  if (!color || !color.startsWith("#") || color.length < 4) return false;
+  let hex = color.slice(1);
+  if (hex.length === 3) hex = hex.split("").map((c) => c + c).join("");
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  return (r * 299 + g * 587 + b * 114) / 1000 > 160;
+}
+
+function extractImgUrl(value) {
+  if (!value) return null;
+  const tagged = String(value).match(/\[img\](.*?)\[\/img\]/i);
+  if (tagged && tagged[1] && tagged[1].trim().startsWith("http")) return tagged[1].trim();
+  if (String(value).startsWith("http")) return String(value).trim();
+  return null;
+}
+
+function parseChannelStreamed(raw) {
+  if (!/channel-streamed/i.test(raw)) return null;
+
+  const idx = raw.search(/channel-streamed/i);
+  const payload = raw
+    .slice(idx)
+    .replace(/^channel-streamed\/?/i, "")
+    .trim();
+  if (!payload) return null;
+
+  const fields = parseStreamedFields(payload);
+  const name = fields.name;
+  const embed = fields.embed;
+  const m3u8 = fields.m3u8;
+  const mp4 = fields.mp4;
+  const playbackUrl = embed || m3u8 || mp4;
+  if (!name || !playbackUrl || !playbackUrl.startsWith("http")) return null;
+
+  const logoUrl =
+    extractImgUrl(fields.logo) ||
+    extractImgUrl(fields.banner) ||
+    extractImgUrl(raw) ||
+    extractImgUrl(fields.logourl);
+
+  const path = playbackUrl.split("?")[0].toLowerCase();
+  const mode = embed ? "embed" : mp4 || path.endsWith(".mp4") ? "mp4" : "m3u8";
+
+  return {
+    name,
+    m3u8: playbackUrl,
+    mode,
+    categoria: (fields.categoria && fields.categoria.trim()) || "General",
+    logoUrl,
+    linea: resolveColor(fields.linea),
+    fondo: resolveColor(fields.fondo),
+    referer: fields.referer || fields.refer || null,
+    origin: fields.origin || null,
+  };
+}
+
+function parseLogoQuetbolUrl(data) {
+  const list = (data && data.urls) || [];
+  for (const raw of list) {
+    if (/channel-streamed/i.test(raw)) continue;
+    const m = String(raw).match(/\[img\](.*?)\[\/img\]/i);
+    if (!m) continue;
+    const url = m[1].trim();
+    var tailParts = String(raw).split(/\[\/img\]/i);
+    const tail = (tailParts[1] && tailParts[1].trim().toLowerCase()) || "";
+    if (!url.startsWith("http")) continue;
+    if (tail === "/logoquetbol" || String(raw).trim().toLowerCase().endsWith("/logoquetbol")) {
+      return url;
+    }
+  }
+  return null;
+}
+
+function parseChannelsFromApi(data) {
+  const list = (data && data.urls) || [];
+  const channels = [];
+  for (const raw of list) {
+    const ch = parseChannelStreamed(String(raw));
+    if (ch) channels.push(ch);
+  }
+  return channels;
+}
+
+function buildCategories(channels) {
+  const names = new Set(channels.map((c) => c.categoria).filter(Boolean));
+  return ["Todos", ...[...names].sort((a, b) => a.localeCompare(b, "es"))];
+}
+
+function channelMatchesFilter(channel) {
+  const cat = panelState.activeCategory;
+  if (cat && cat !== "Todos" && channel.categoria !== cat) return false;
+  const q = panelState.searchQuery;
+  if (q && !channel.name.toLowerCase().includes(q)) return false;
+  return true;
+}
+
+function initials(name) {
+  return String(name)
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 3);
+}
+
+function renderCategories() {
+  const container = document.getElementById("category-bar");
+  if (!container) return;
+
+  const categories = buildCategories(panelState.channels);
+  if (!categories.includes(panelState.activeCategory)) {
+    panelState.activeCategory = "Todos";
+  }
+
+  container.innerHTML = "";
+
+  for (const cat of categories) {
+    const el = document.createElement("button");
+    el.type = "button";
+    el.className = "category-chip" + (cat === panelState.activeCategory ? " active" : "");
+    el.tabIndex = 0;
+    el.dataset.focusItem = "";
+    el.textContent = cat;
+    container.appendChild(el);
+  }
+}
+
+function renderChannelCard(channel) {
+  const card = document.createElement("article");
+  card.className = "card";
+  card.tabIndex = 0;
+  card.dataset.focusItem = "";
+  card.dataset.m3u8 = channel.m3u8;
+  card.dataset.name = channel.name;
+  card.style.setProperty("--card-linea", channel.linea || "#ffd400");
+  if (channel.referer) card.dataset.referer = channel.referer;
+  if (channel.origin) card.dataset.origin = channel.origin;
+
+  const logoBox = document.createElement("div");
+  logoBox.className = "logo-channel";
+  if (channel.fondo) {
+    logoBox.style.backgroundColor = channel.fondo;
+    if (isLightColor(channel.fondo)) logoBox.classList.add("logo-channel--light");
+  }
+
+  if (channel.logoUrl) {
+    const img = document.createElement("img");
+    img.src = channel.logoUrl;
+    img.alt = channel.name;
+    img.loading = "lazy";
+    if (/telemundo/i.test(channel.name)) img.classList.add("logo-channel-img--lg");
+    img.addEventListener("error", () => {
+      img.remove();
+      const ph = document.createElement("span");
+      ph.className = "placeholder";
+      ph.textContent = initials(channel.name);
+      logoBox.appendChild(ph);
+    });
+    logoBox.appendChild(img);
+  } else {
+    const ph = document.createElement("span");
+    ph.className = "placeholder";
+    ph.textContent = initials(channel.name);
+    logoBox.appendChild(ph);
+  }
+
+  const body = document.createElement("div");
+  body.className = "card-body";
+  body.innerHTML = `
+    <h3></h3>
+    <p></p>
+    <div class="progress"><div class="bar"></div></div>
+  `;
+  body.querySelector("h3").textContent = channel.name;
+  body.querySelector("p").textContent = `EN VIVO · ${channel.categoria}`;
+
+  const bar = body.querySelector(".bar");
+  if (channel.linea && bar) bar.style.backgroundColor = channel.linea;
+
+  card.append(logoBox, body);
+  return card;
+}
+
+function renderChannelGrid() {
+  const grid = document.getElementById("channels-grid");
+  if (!grid) return;
+
+  const visible = panelState.channels.filter(channelMatchesFilter);
+  grid.innerHTML = "";
+
+  if (!panelState.channels.length) {
+    const empty = document.createElement("p");
+    empty.className = "grid-empty";
+    empty.textContent = "No hay canales en la API todavía.";
+    grid.appendChild(empty);
+    return;
+  }
+
+  if (!visible.length) {
+    const empty = document.createElement("p");
+    empty.className = "grid-empty";
+    empty.textContent = "Ningún canal coincide con el filtro.";
+    grid.appendChild(empty);
+    return;
+  }
+
+  for (const channel of visible) {
+    grid.appendChild(renderChannelCard(channel));
+  }
+
+  window.dispatchEvent(new CustomEvent("channels-rendered"));
+}
+
+function applyBrandLogo(url) {
+  const brand = document.getElementById("brand-logo");
+  const brandFallback = document.getElementById("brand-logo-fallback");
+  if (!brand || !url) return;
+
+  brand.src = url;
+  brand.alt = "Quetbol";
+  brand.hidden = false;
+  if (brandFallback) brandFallback.hidden = true;
+}
+
+function applyPanelData(data) {
+  const logoUrl = parseLogoQuetbolUrl(data);
+  if (logoUrl) applyBrandLogo(logoUrl);
+
+  panelState.channels = parseChannelsFromApi(data);
+  renderCategories();
+  renderChannelGrid();
+}
+
+function setActiveCategory(category) {
+  panelState.activeCategory = category || "Todos";
+  document.querySelectorAll(".category-chip").forEach((el) => {
+    el.classList.toggle("active", el.textContent === panelState.activeCategory);
+  });
+  renderChannelGrid();
+}
+
+function setChannelSearch(query) {
+  panelState.searchQuery = String(query || "").trim().toLowerCase();
+  renderChannelGrid();
+}
+
+async function loadPanelMedia() {
+  try {
+    const res = await fetch(IMAGE_API, { headers: { Accept: "application/json" } });
+    const data = await res.json();
+    applyPanelData(data);
+  } catch (err) {
+    console.warn("[media] No se pudo cargar la API", err);
+    renderChannelGrid();
+  }
+}
+
+window.loadPanelMedia = loadPanelMedia;
+window.setActiveCategory = setActiveCategory;
+window.setChannelSearch = setChannelSearch;
+window.panelState = panelState;
+  </script>
+  <script>
+/* Pluto Panel — touch + mando / teclado */
+
+const ZONES = {
+  menu: () => [...document.querySelectorAll('[data-focus-zone="menu"] [data-focus-item]')],
+  categories: () => [...document.querySelectorAll('[data-focus-zone="categories"] [data-focus-item]')],
+  session: () => [...document.querySelectorAll('[data-focus-zone="session"] [data-focus-item]')],
+  banner: () => [...document.querySelectorAll('[data-focus-zone="banner"] [data-focus-item]')],
+  grid: () => [...document.querySelectorAll('[data-focus-zone="grid"] .card[data-focus-item]')],
+};
+
+function firstSessionItem() {
+  const session = ZONES.session();
+  return session.length ? session[0] : null;
+}
+
+const ACTIVATE_KEYS = new Set(["Enter", " ", "NumpadEnter", "Select"]);
+const BACK_KEYS = new Set(["Escape", "Backspace", "BrowserBack"]);
+const ARROW = {
+  ArrowUp: "up",
+  ArrowDown: "down",
+  ArrowLeft: "left",
+  ArrowRight: "right",
+};
+const KEYCODE_DIR = { 19: "up", 20: "down", 21: "left", 22: "right" };
+const KEYCODE_ACTIVATE = new Set([13, 23]);
+const KEYCODE_BACK = new Set([4, 10009, 461, 8]);
+
+let focusHistory = [];
+let lastPlayerFocus = null;
+
+function sidebarVisible() {
+  return !window.matchMedia("(max-width: 900px)").matches;
+}
+
+function contentEntry() {
+  return ZONES.banner()[0] || ZONES.categories()[0] || ZONES.grid()[0] || null;
+}
+
+function zoneOf(el) {
+  if (!el) return null;
+  var zone = el.closest("[data-focus-zone]");
+  return zone && zone.dataset ? zone.dataset.focusZone || null : null;
+}
+
+function keyDirection(e) {
+  return ARROW[e.key] || KEYCODE_DIR[e.keyCode] || null;
+}
+
+function isActivateKey(e) {
+  return ACTIVATE_KEYS.has(e.key) || KEYCODE_ACTIVATE.has(e.keyCode);
+}
+
+function isBackKey(e) {
+  return BACK_KEYS.has(e.key) || KEYCODE_BACK.has(e.keyCode);
+}
+
+function currentFocusItem() {
+  const active = document.activeElement;
+  if (active && active.matches && active.matches("[data-focus-item]")) return active;
+  const marked = document.querySelector("[data-focus-item].tv-focused");
+  if (marked) return marked;
+  return (
+    document.querySelector("nav li.active[data-focus-item]") ||
+    ZONES.menu()[0] ||
+    contentEntry()
+  );
+}
+
+function scrollItemIntoView(el) {
+  const channelsScroll = el.closest(".channels-scroll");
+  if (channelsScroll) {
+    const margin = 16;
+    const er = el.getBoundingClientRect();
+    const sr = channelsScroll.getBoundingClientRect();
+    if (er.top < sr.top + margin) {
+      channelsScroll.scrollTop -= sr.top + margin - er.top;
+    } else if (er.bottom > sr.bottom - margin) {
+      channelsScroll.scrollTop += er.bottom - sr.bottom + margin;
+    }
+    return;
+  }
+
+  const nav = el.closest("nav");
+  if (nav) {
+    const margin = 8;
+    const er = el.getBoundingClientRect();
+    const sr = nav.getBoundingClientRect();
+    if (er.top < sr.top + margin) {
+      nav.scrollTop -= sr.top + margin - er.top;
+    } else if (er.bottom > sr.bottom - margin) {
+      nav.scrollTop += er.bottom - sr.bottom + margin;
+    }
+    return;
+  }
+
+  const categoryBar = el.closest(".category-bar");
+  if (categoryBar) {
+    const margin = 12;
+    const er = el.getBoundingClientRect();
+    const sr = categoryBar.getBoundingClientRect();
+    if (er.left < sr.left + margin) {
+      categoryBar.scrollLeft -= sr.left + margin - er.left;
+    } else if (er.right > sr.right - margin) {
+      categoryBar.scrollLeft += er.right - sr.right + margin;
+    }
+    return;
+  }
+
+  el.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
+}
+
+function focusEl(el, { pushHistory = true } = {}) {
+  if (!el || !el.matches("[data-focus-item]")) return;
+  const current = currentFocusItem();
+  if (pushHistory && current && current !== el) {
+    focusHistory.push(current);
+    if (focusHistory.length > 24) focusHistory.shift();
+  }
+  el.focus({ preventScroll: true });
+  scrollItemIntoView(el);
+  el.classList.add("tv-focused");
+  document.querySelectorAll("[data-focus-item].tv-focused").forEach((node) => {
+    if (node !== el) node.classList.remove("tv-focused");
+  });
+}
+
+function pairedIndex(fromZone, toZone, fromEl) {
+  const fromList = ZONES[fromZone]();
+  const toList = ZONES[toZone]();
+  const i = fromList.indexOf(fromEl);
+  if (i < 0 || !toList.length) return 0;
+  return Math.min(i, toList.length - 1);
+}
+
+function gridRows() {
+  const cards = ZONES.grid();
+  if (!cards.length) return [];
+
+  const buckets = new Map();
+  for (const card of cards) {
+    const top = Math.round(card.offsetTop);
+    if (!buckets.has(top)) buckets.set(top, []);
+    buckets.get(top).push(card);
+  }
+
+  return [...buckets.entries()]
+    .sort((a, b) => a[0] - b[0])
+    .map(([, row]) => row);
+}
+
+function gridColumns() {
+  const rows = gridRows();
+  return rows.length ? rows[0].length : 1;
+}
+
+function gridPosition(el) {
+  const rows = gridRows();
+  for (let r = 0; r < rows.length; r += 1) {
+    const c = rows[r].indexOf(el);
+    if (c >= 0) return { row: r, col: c, rows };
+  }
+  return null;
+}
+
+function moveGrid(el, dir) {
+  const pos = gridPosition(el);
+  if (!pos) return null;
+
+  const { row, col, rows } = pos;
+
+  if (dir === "left" && col > 0) return rows[row][col - 1];
+  if (dir === "right" && col < rows[row].length - 1) return rows[row][col + 1];
+  if (dir === "up" && row > 0) {
+    const upRow = rows[row - 1];
+    return upRow[Math.min(col, upRow.length - 1)];
+  }
+  if (dir === "down" && row < rows.length - 1) {
+    const downRow = rows[row + 1];
+    return downRow[Math.min(col, downRow.length - 1)];
+  }
+  return null;
+}
+
+function gridColumnUpTarget(el) {
+  const pos = gridPosition(el);
+  const cats = ZONES.categories();
+  if (!pos || !cats.length) return ZONES.banner()[0] || null;
+  if (pos.row > 0) return moveGrid(el, "up");
+  return cats[Math.min(pos.col, cats.length - 1)];
+}
+
+function navigateFrom(el, dir) {
+  const zone = zoneOf(el);
+  if (!zone) return null;
+
+  if (zone === "menu") {
+    const list = ZONES.menu();
+    const i = list.indexOf(el);
+    if (dir === "up" && i > 0) return list[i - 1];
+    if (dir === "down") {
+      if (i < list.length - 1) return list[i + 1];
+      return firstSessionItem();
+    }
+    if (dir === "right") {
+      if (!sidebarVisible()) return contentEntry();
+      return contentEntry();
+    }
+    return null;
+  }
+
+  if (zone === "categories") {
+    const list = ZONES.categories();
+    const grid = ZONES.grid();
+    const i = list.indexOf(el);
+    if (dir === "left" && i > 0) return list[i - 1];
+    if (dir === "right" && i < list.length - 1) return list[i + 1];
+    if (dir === "up") return ZONES.banner()[0] || null;
+    if (dir === "down") {
+      if (!grid.length) return null;
+      const pos = gridPosition(grid[0]);
+      if (pos && pos.rows && pos.rows[0]) return pos.rows[0][Math.min(i, pos.rows[0].length - 1)];
+      return grid[Math.min(i, grid.length - 1)];
+    }
+    return null;
+  }
+
+  if (zone === "session") {
+    const list = ZONES.session();
+    const menu = ZONES.menu();
+    const i = list.indexOf(el);
+    if (dir === "up") {
+      if (menu.length) return menu[menu.length - 1];
+      return null;
+    }
+    if (dir === "down" && i < list.length - 1) return list[i + 1];
+    if (dir === "right") return contentEntry();
+    if (dir === "left") return null;
+    return null;
+  }
+
+  if (zone === "banner") {
+    if (dir === "up") return null;
+    if (dir === "down") return ZONES.categories()[0] || ZONES.grid()[0];
+    if (dir === "left") {
+      if (!sidebarVisible()) return null;
+      return ZONES.menu()[0];
+    }
+    if (dir === "right") return ZONES.categories()[0] || ZONES.grid()[0];
+    return null;
+  }
+
+  if (zone === "grid") {
+    if (dir === "up") return gridColumnUpTarget(el);
+    if (dir === "left") {
+      const next = moveGrid(el, "left");
+      if (next) return next;
+      if (!sidebarVisible()) return null;
+      const pos = gridPosition(el);
+      const cats = ZONES.categories();
+      if (cats.length && pos) return cats[Math.min(pos.col, cats.length - 1)];
+      if (cats.length) return cats[0];
+      return firstSessionItem();
+    }
+    if (dir === "down" || dir === "right") return moveGrid(el, dir);
+    return null;
+  }
+
+  return null;
+}
+
+function activateEl(el) {
+  if (!el) return;
+  if (el.tagName === "INPUT") return;
+
+  if (el.matches("nav li")) {
+    document.querySelectorAll("nav li").forEach((c) => c.classList.remove("active"));
+    el.classList.add("active");
+    const menuLabel = el.querySelector(".menu-label");
+    const label = (menuLabel && menuLabel.textContent) || el.textContent;
+    if (label.toLowerCase().includes("buscar")) {
+      const first = ZONES.grid()[0];
+      if (first) focusEl(first, { pushHistory: true });
+    }
+    return;
+  }
+
+  if (el.classList.contains("category-chip")) {
+    document.querySelectorAll(".category-chip").forEach((c) => c.classList.remove("active"));
+    el.classList.add("active");
+    if (typeof setActiveCategory === "function") setActiveCategory(el.textContent);
+    return;
+  }
+
+  if (el.classList.contains("card")) {
+    playChannelCard(el);
+    return;
+  }
+
+  if (el.tagName === "BUTTON") {
+    el.click();
+    return;
+  }
+
+  if (el.click) el.click();
+}
+
+function goBack() {
+  const overlay = document.getElementById("player-overlay");
+  if (overlay && !overlay.hidden) {
+    stopPlayer();
+    return;
+  }
+  if (focusHistory.length) {
+    focusEl(focusHistory.pop(), { pushHistory: false });
+    return;
+  }
+  focusEl(ZONES.menu().find((li) => li.classList.contains("active")) || ZONES.menu()[0], { pushHistory: false });
+}
+
+function onKeyDown(e) {
+  const playerOverlay = document.getElementById("player-overlay");
+
+  if (playerOverlay && !playerOverlay.hidden) {
+    if (isBackKey(e)) {
+      e.preventDefault();
+      goBack();
+    }
+    return;
+  }
+
+  const dir = keyDirection(e);
+
+  if (dir) {
+    e.preventDefault();
+    const current = currentFocusItem();
+    const target = navigateFrom(current, dir);
+    if (target) focusEl(target);
+    return;
+  }
+
+  if (isActivateKey(e)) {
+    const el = currentFocusItem();
+    if (el && el.matches && el.matches("[data-focus-item]") && el.tagName !== "INPUT") {
+      e.preventDefault();
+      activateEl(el);
+    }
+    return;
+  }
+
+  if (isBackKey(e)) {
+    e.preventDefault();
+    goBack();
+    return;
+  }
+
+  if (e.key === "Home") {
+    e.preventDefault();
+    focusEl(ZONES.menu()[0]);
+    return;
+  }
+
+  if (e.key === "End") {
+    e.preventDefault();
+    const grid = ZONES.grid();
+    if (grid.length) focusEl(grid[grid.length - 1]);
+  }
+}
+
+let hlsInstance = null;
+let exitingFullscreen = false;
+
+function showPlayerVeil() {
+  var veil = document.getElementById("player-veil");
+  if (veil && veil.classList) veil.classList.remove("is-hidden");
+}
+
+function hidePlayerVeil() {
+  var veilHide = document.getElementById("player-veil");
+  if (veilHide && veilHide.classList) veilHide.classList.add("is-hidden");
+}
+
+function bindPlayerVeil(video) {
+  if (!video || video.dataset.veilBound === "1") return;
+  video.dataset.veilBound = "1";
+
+  video.addEventListener("playing", hidePlayerVeil);
+  video.addEventListener("timeupdate", () => {
+    if (video.currentTime > 0) hidePlayerVeil();
+  });
+  video.addEventListener("waiting", showPlayerVeil);
+  video.addEventListener("loadstart", showPlayerVeil);
+  video.addEventListener("emptied", showPlayerVeil);
+}
+
+function isPlayerFullscreen() {
+  return !!(document.fullscreenElement || document.webkitFullscreenElement);
+}
+
+async function openPlayerFullscreen() {
+  const overlay = document.getElementById("player-overlay");
+  const video = document.getElementById("player-video");
+  for (const el of [overlay, video]) {
+    if (!el) continue;
+    try {
+      if (el.requestFullscreen) {
+        await el.requestFullscreen();
+        return;
+      }
+      if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+        return;
+      }
+    } catch (_) {
+      /* probar siguiente elemento */
+    }
+  }
+}
+
+async function closePlayerFullscreen() {
+  if (!isPlayerFullscreen()) return;
+  exitingFullscreen = true;
+  try {
+    if (document.exitFullscreen) await document.exitFullscreen();
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+  } catch (_) {
+    /* sin fullscreen activo */
+  } finally {
+    exitingFullscreen = false;
+  }
+}
+
+function onPlayerFullscreenChange() {
+  if (exitingFullscreen) return;
+  const overlay = document.getElementById("player-overlay");
+  if (!overlay || overlay.hidden) return;
+  if (!isPlayerFullscreen()) stopPlayer();
+}
+
+function stopPlayer({ restoreFocus = true } = {}) {
+  const overlay = document.getElementById("player-overlay");
+  const video = document.getElementById("player-video");
+  if (hlsInstance) {
+    hlsInstance.destroy();
+    hlsInstance = null;
+  }
+  if (video) {
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+  }
+  showPlayerVeil();
+  closePlayerFullscreen();
+  if (overlay) overlay.hidden = true;
+
+  if (restoreFocus && lastPlayerFocus && lastPlayerFocus.isConnected) {
+    focusEl(lastPlayerFocus, { pushHistory: false });
+  }
+}
+
+function playChannelCard(card) {
+  const m3u8 = card.dataset.m3u8;
+  if (!m3u8) return;
+
+  const overlay = document.getElementById("player-overlay");
+  const video = document.getElementById("player-video");
+  if (!overlay || !video) return;
+
+  lastPlayerFocus = card;
+  stopPlayer({ restoreFocus: false });
+  overlay.hidden = false;
+  showPlayerVeil();
+  bindPlayerVeil(video);
+  overlay.focus({ preventScroll: true });
+
+  card.classList.add("card-playing");
+  setTimeout(() => card.classList.remove("card-playing"), 600);
+
+  const startFullscreen = () => {
+    openPlayerFullscreen().catch(() => {});
+  };
+
+  if (video.canPlayType("application/vnd.apple.mpegurl")) {
+    video.src = m3u8;
+    video.play().then(startFullscreen).catch(startFullscreen);
+    return;
+  }
+
+  if (window.Hls && window.Hls.isSupported && window.Hls.isSupported()) {
+    hlsInstance = new window.Hls();
+    hlsInstance.loadSource(m3u8);
+    hlsInstance.attachMedia(video);
+    hlsInstance.on(window.Hls.Events.MANIFEST_PARSED, () => {
+      video.play().then(startFullscreen).catch(startFullscreen);
+    });
+    return;
+  }
+
+  video.src = m3u8;
+  video.play().then(startFullscreen).catch(startFullscreen);
+}
+
+/* Clicks + hover (touch / ratón) */
+var categoryBarEl = document.getElementById("category-bar");
+if (categoryBarEl) categoryBarEl.addEventListener("click", (e) => {
+  const item = e.target.closest(".category-chip");
+  if (!item) return;
+  document.querySelectorAll(".category-chip").forEach((c) => c.classList.remove("active"));
+  item.classList.add("active");
+  if (typeof setActiveCategory === "function") setActiveCategory(item.textContent);
+  focusEl(item, { pushHistory: false });
+});
+
+var channelsGridEl = document.getElementById("channels-grid");
+if (channelsGridEl) channelsGridEl.addEventListener("click", (e) => {
+  const card = e.target.closest(".card");
+  if (!card) return;
+  activateEl(card);
+});
+
+document.querySelectorAll("nav li").forEach((item) => {
+  item.addEventListener("click", () => {
+    document.querySelectorAll("nav li").forEach((c) => c.classList.remove("active"));
+    item.classList.add("active");
+    focusEl(item, { pushHistory: false });
+  });
+});
+
+const playerOverlay = document.getElementById("player-overlay");
+if (playerOverlay) playerOverlay.setAttribute("tabindex", "-1");
+
+document.addEventListener("fullscreenchange", onPlayerFullscreenChange);
+document.addEventListener("webkitfullscreenchange", onPlayerFullscreenChange);
+
+document.addEventListener("focusin", (e) => {
+  const el = e.target.closest("[data-focus-item]");
+  if (!el) return;
+  document.querySelectorAll("[data-focus-item].tv-focused").forEach((n) => {
+    if (n !== el) n.classList.remove("tv-focused");
+  });
+  el.classList.add("tv-focused");
+});
+
+document.addEventListener("focusout", (e) => {
+  const el = e.target.closest("[data-focus-item]");
+  if (el) el.classList.remove("tv-focused");
+});
+
+document.addEventListener("keydown", onKeyDown, true);
+
+/* Foco inicial (mando / TV) — tras login START */
+window.addEventListener("load", async () => {
+  if (window.startAuthReady) await window.startAuthReady;
+  if (typeof loadPanelMedia === "function") await loadPanelMedia();
+
+  const start = sidebarVisible()
+    ? (document.querySelector("nav li.active") || ZONES.menu()[0])
+    : (contentEntry() || ZONES.menu()[0]);
+  focusEl(start, { pushHistory: false });
+});
+
+window.addEventListener("resize", () => {
+  const el = currentFocusItem();
+  if (el && el.closest && el.closest('[data-focus-zone="grid"]')) scrollItemIntoView(el);
+});
+
+window.addEventListener("channels-rendered", () => {
+  const el = currentFocusItem();
+  if (el && el.isConnected) scrollItemIntoView(el);
+});
+  </script>
+</body>
+</html>
